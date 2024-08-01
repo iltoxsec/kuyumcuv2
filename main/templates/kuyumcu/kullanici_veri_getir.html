@@ -1,0 +1,98 @@
+{% extends "base/base.html" %}
+
+{% block title %}{{ user.first_name }} için Veri Ekle{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% include 'base/message.html' %}
+
+    <h2 class="mt-4">{{ user.first_name }} için Veriler</h2>
+
+    <h3>Veri Filtrele</h3>
+    <form method="get" class="mb-4">
+        {{ filter_form.as_p }}
+        <button type="submit" class="btn btn-primary">Filtrele</button>
+    </form>
+
+    
+    <h3>Mevcut Veriler</h3>
+    <div class="d-flex justify-content-end">
+        <h4 class="display-4 fst-italic rounded">Genel Toplam: <b class="{% if genel_fark > 0 %}text-success{% elif genel_fark == 0 %}text-dark{% else %}text-danger{% endif %}">{{genel_fark|floatformat:0}}</b></h4>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tip</th>
+                <th>Cins</th>
+                <th>Miktar</th>
+                <th>Milyem/cm</th>
+                <th>Birim</th>
+                <th>Alt Toplam</th>
+                <th>Açıklama</th>
+                <th>Adet</th>
+                <th>İşçilik</th>
+                <th>mm/cm</th>
+                <th>İşç. Toplam</th>
+                <th>İşlem Tipi</th>
+                <th>Tarih</th>
+                <th>Genel Toplam</th>
+                <th>Düzenle</th>
+                <th>Sil</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for veri in kuyumcular %}
+            <tr>
+                <td>{{ veri.tip }}</td>
+                <td>{{ veri.cins }}</td>
+                <td>{{ veri.miktar }}</td>
+                <td>{{ veri.milyem_per_cm }}</td>
+                <td>{{ veri.birim }}</td>
+                <td>{{ veri.alt_toplam }}</td>
+                <td>{{ veri.aciklama }}</td>
+                <td>{{ veri.adet }}</td>
+                <td>{{ veri.iscilik }}</td>
+                <td>{{ veri.mm_per_cm }}</td>
+                <td>{{ veri.isc_toplam }}</td>
+                <td class="{% if veri.islem_tipi == 'Altın Verildi' %}bg-danger text-white{% elif veri.islem_tipi == 'Altın Alındı!' %}bg-success text-white{% else %}bg-primary text-white{% endif %}">
+                    {{ veri.islem_tipi }}
+                </td>
+                <td>{{ veri.tarih|date:"M d, Y" }}</td>
+                <td>{{ veri.genel_toplam|floatformat:0 }}</td>
+                <td><a href="{% url 'kuyumcu:kullanici_veri_duzenle' veri.id %}" class="btn btn-warning btn-sm">Düzenle</a></td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{ veri.id }}')">Sil</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p>Bu veriyi silmek istediğinizden emin misiniz?</p>
+            <a id="confirm-delete" href="" class="btn btn-danger">Evet</a>
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Hayır</button>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $("#id_tarih").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+        });
+
+        function openModal(veriId) {
+            document.getElementById('confirm-delete').href = '{% url "kuyumcu:kullanici_veri_sil" 0 %}'.replace('0', veriId);
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</div>
+{% endblock %}

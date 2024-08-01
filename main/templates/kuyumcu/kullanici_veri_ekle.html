@@ -1,0 +1,153 @@
+{% extends "base/base.html" %}
+
+{% block title %}{{ user.first_name }} için Veri Ekle{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    {% include 'base/message.html' %}
+
+    <h2 class="mt-4">{{ user.first_name }} için Veri Ekle</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="firstname" class="form-label">Tip</label>
+                        {{ form.tip }}
+                    </div>
+                    <div class="col">
+                        <label for="lastname" class="form-label">Cins</label>
+                        {{ form.cins }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Miktar</label>
+                        {{ form.miktar }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">Milyem</label>
+                        {{ form.milyem_per_cm }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Birim</label>
+                        {{ form.birim }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">Açıklama</label>
+                        {{ form.aciklama }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Adet</label>
+                        {{ form.adet }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">İşcilik</label>
+                        {{ form.iscilik }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">MM/CM</label>
+                        {{ form.mm_per_cm }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">İşlem Tipi</label>
+                        {{ form.islem_tipi }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Tarih</label>
+                        {{ form.tarih }}
+                    </div>
+                    <div class="col mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Kaydet</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <h3>Mevcut Veriler</h3>
+            <div class="d-flex justify-content-end">
+                <h4 class="display-4 fst-italic rounded">Genel Toplam: <b class="{% if genel_fark > 0 %}text-success{% elif genel_fark == 0 %}text-dark{% else %}text-danger{% endif %}">{{genel_fark|floatformat:0}}</b></h4>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tip</th>
+                            <th>Cins</th>
+                            <th>Miktar</th>
+                            <th>Milyem/cm</th>
+                            <th>Birim</th>
+                            <th>Alt Toplam</th>
+                            <th>Açıklama</th>
+                            <th>Adet</th>
+                            <th>İşçilik</th>
+                            <th>mm/cm</th>
+                            <th>İşç. Toplam</th>
+                            <th>İşlem Tipi</th>
+                            <th>Tarih</th>
+                            <th>Genel Toplam</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for veri in kuyumcular %}
+                        <tr>
+                            <td>{{ veri.tip }}</td>
+                            <td>{{ veri.cins }}</td>
+                            <td>{{ veri.miktar }}</td>
+                            <td>{{ veri.milyem_per_cm }}</td>
+                            <td>{{ veri.birim }}</td>
+                            <td>{{ veri.alt_toplam }}</td>
+                            <td>{{ veri.aciklama }}</td>
+                            <td>{{ veri.adet }}</td>
+                            <td>{{ veri.iscilik }}</td>
+                            <td>{{ veri.mm_per_cm }}</td>
+                            <td>{{ veri.isc_toplam }}</td>
+                            <td class="{% if veri.islem_tipi == 'Altın Verildi' %}bg-danger text-white{% elif veri.islem_tipi == 'Altın Alındı!' %}bg-success text-white{% else %}bg-primary text-white{% endif %}">
+                                {{ veri.islem_tipi }}
+                            </td>
+                            <td>{{ veri.tarih|date:"M d, Y" }}</td>
+                            <td>{{ veri.genel_toplam|floatformat:0 }}</td>
+                            <td><a href="{% url 'kuyumcu:kullanici_veri_duzenle' veri.id %}" class="btn btn-warning btn-sm">Düzenle</a>
+                                <td><button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#silModal{{ veri.id }}">Sil</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+   <!-- Modal -->
+   {% for veri in kuyumcular %}
+   <div class="modal fade" id="silModal{{ veri.id }}" tabindex="-1" aria-labelledby="silModalLabel{{ veri.id }}" aria-hidden="true">
+       <div class="modal-dialog">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="silModalLabel{{ veri.id }}">Veriyi Sil</h5>
+                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                   Bu veriyi silmek istediğinize emin misiniz?
+               </div>
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                   <a href="{% url 'kuyumcu:kullanici_veri_sil' veri.id %}" class="btn btn-danger">Sil</a>
+               </div>
+           </div>
+       </div>
+   </div>
+   {% endfor %}
+
+</div>
+{% endblock %}

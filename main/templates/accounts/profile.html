@@ -1,0 +1,44 @@
+{% extends "base/base.html" %}
+{% block title %}{{request.user.username}} Hesap Bilgisi{% endblock title %}
+{% block content %}
+<div class="container mt-3" id="custom-cards">
+    {% include 'base/message.html' %}
+    <h1 class="display-6 fst-italic text-center">Hesap Bilgisi</h1>
+    <hr>  
+    <div class="container">
+        <fieldset disabled>
+        <div class="row mb-3">
+            <div class="col">
+                <label for="username" class="form-label">Kullanıcı Adı</label>
+                <input type="text" id="disabledTextInput" class="form-control" name="username" value="{{request.user.username}}">
+            </div>
+            <div class="col">
+                <label for="email" class="form-label">E-posta</label>
+                <input type="email" id="disabledTextInput" class="form-control" name="email" value="{{request.user.email}}">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                <label for="firstname" class="form-label">Ad</label>
+                <input type="text" id="disabledTextInput" class="form-control" name="firstname" value="{{request.user.first_name}}">
+            </div>
+            <div class="col">
+                <label for="lastname" class="form-label">Soyad</label>
+            <input type="text" id="disabledTextInput" class="form-control" name="lastname" value="{{request.user.last_name}}"> 
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <div class="alert alert-primary fs-5" role="alert">
+                Hesap Bilgilerini <a href="{% url 'accounts:updateUserProfile' %}" class="alert-link">Güncelle <i class="fa-solid fa-user-pen"></i></a>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <div class="alert alert-info fs-5" role="alert">
+                Şifreni <a href="{% url 'accounts:changeUserPassword' %}" class="alert-link">Değiştir <i class="fa-solid fa-user-pen"></i></a>
+            </div>
+        </div>
+
+    </fieldset>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base/base.html" %}
+
+{% block title %}Veri Düzenle{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+    {% include 'base/message.html' %}
+
+    <h2 class="mt-4">{{ user.first_name }} için Veri Düzenle</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="firstname" class="form-label">Tip</label>
+                        {{ form.tip }}
+                    </div>
+                    <div class="col">
+                        <label for="lastname" class="form-label">Cins</label>
+                        {{ form.cins }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Miktar</label>
+                        {{ form.miktar }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">Milyem</label>
+                        {{ form.milyem_per_cm }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Birim</label>
+                        {{ form.birim }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">Açıklama</label>
+                        {{ form.aciklama }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Adet</label>
+                        {{ form.adet }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">İşcilik</label>
+                        {{ form.iscilik }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">MM/CM</label>
+                        {{ form.mm_per_cm }}
+                    </div>
+                    <div class="col">
+                        <label for="text" class="form-label">İşlem Tipi</label>
+                        {{ form.islem_tipi }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="text" class="form-label">Tarih</label>
+                        {{ form.tarih }}
+                    </div>
+                    <div class="col mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg"">Kaydet</button>
+                    </div>
+                </div>
+            </form>
+    <a href="{% url 'kuyumcu:kullanici_veri_ekle' veri.user.id %}" class="btn btn-secondary">Geri Dön</a>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(function() {
+        $("#id_tarih").datepicker({
+            dateFormat: "yy-mm-dd", // İstediğiniz tarih formatı
+            changeMonth: true,
+            changeYear: true
+        });
+
+        // Değer varsa onu da ayarla
+        var currentVal = '{{ form.tarih.value }}';
+        if (currentVal) {
+            $("#id_tarih").datepicker("setDate", new Date(currentVal));
+        }
+    });
+</script>
+{% endblock %}
+

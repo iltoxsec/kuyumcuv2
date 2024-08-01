@@ -1,0 +1,88 @@
+{% extends "base/base.html" %}
+{% block title %}Genel Görünüm{% endblock %}
+
+{% block content %}
+<style>
+    .chart-container {
+        position: relative;
+        height: 400px; /* Grafiğin yüksekliğini belirleyin */
+        width: 100%;
+    }
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+    /* Sayfa içeriğini sabitlemek için ek stil */
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
+    .col-md-6 {
+        flex: 1;
+    }
+
+</style>
+<div class="row">
+    {% if user.is_authenticated %}
+        <div class="col-md-6">
+    {% include 'base/message.html' %}
+
+            <h2>Tüm Kullanıcılar</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>İsim Soyisim</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        <td>{{ user.date_joined|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'kuyumcu:kullanici_veri_getir' user.id %}" class="btn btn-primary btn-sm">Verileri Getir</a>
+                            <a href="{% url 'kuyumcu:kullanici_veri_ekle' user.id %}" class="btn btn-warning btn-sm">Kuyumcu Veri Ekle</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h2>Genel Grafik</h2>
+            <div class="chart-container">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    {% else %}
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="alert alert-warning" role="alert">
+            Tüm özellikleri görebilmek için lütfen <a href="{% url 'accounts:user_login' %}" class="alert-link">giriş yapın</a>.
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Altın Verildi', 'Altın Alındı'],
+            datasets: [{
+                label: 'Altın İşlemleri',
+                data: [{{ altin_verildi_toplam|floatformat:0 }}, {{ altin_alindi_toplam|floatformat:0 }}],
+                backgroundColor: ['#e80505', '#36eb42'],
+                hoverBackgroundColor: ['#e80505', '#36eb42']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}

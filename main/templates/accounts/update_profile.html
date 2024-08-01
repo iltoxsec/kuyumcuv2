@@ -1,0 +1,46 @@
+{% extends "base/base.html" %}
+{% block title %}Hesap Bilgilerini Güncelle · {% endblock title %}
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+    <div class="col-md-8 mx-auto">
+        <h1 class="text-center display-4 fst-italic rounded">Hesap Bilgilerini Güncelle</h1>
+        <div class="container">
+        <div class="col">
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {{form.errors}}
+                    </div>
+                {% endif %}
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="firstname" class="form-label">Ad</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="col">
+                        <label for="lastname" class="form-label">Soyad</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="username" class="form-label">Kullanıcı Adı</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="col">
+                        <label for="email" class="form-label">E-posta Adresi</label>
+                        {{ form.email }}
+                    </div>
+                </div>
+                
+                <div class="mb-3 text-center">
+                    <input type="submit" value="Güncelle" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
